@@ -16,6 +16,7 @@
                 <th>Artista</th>
                 <th>Duración</th>
                 <th>Explícita</th>
+                <th>Acciones</th>
             </tr>
         </thead>
         <tbody>
@@ -33,6 +34,9 @@
                     {% else %}
                         No
                     {% endif %}
+                </td>
+                <td>
+                    <a href="/songs/{{ song.id }}">Ver 👁️</a>
                 </td>
             </tr>
             {% endfor %}
