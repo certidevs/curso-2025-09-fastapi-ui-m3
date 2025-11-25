@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🐦‍⬛🎶 Detalle de canción</title>
+</head>
+<body>
+    <h1>Detalle de canción 🐦‍⬛🎶</h1>
+
+    <div>
+        <div>ID: <span>{{ song.id }}</span></div>
+        <div>Título: <span>{{ song.title }}</span></div>
+        <div>Artista: <span>{{ song.artist }}</span></div>
+        <div>Duración: <span>
+            {% if song.duration_seconds is not none %}
+                {% set minutes = song.duration_seconds // 60 %}
+                {% set seconds = song.duration_seconds % 60 %}
+                {{ song.duration_seconds }} segundos ({{ "%d:%02d"|format(minutes, seconds) }})
+            {% else %}
+                No especificado
+            {% endif %}
+        </span></div>
+        <div>Explícita: <span>
+            {% if song.explicit is none %}
+                No especificado
+            {% elif song.explicit %}
+                Sí
+            {% else %}
+                No
+            {% endif %}
+        </span></div>
+    </div>
+
+    <br>
+    
+    <a href="/songs">Volver a la lista</a>
+</body>
+</html>
