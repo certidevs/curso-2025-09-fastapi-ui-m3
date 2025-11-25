@@ -42,7 +42,8 @@ def init_db():
     Inicializa la base de datos con canciones por defecto si está vacía.
     Sólo crea las canciones si no existen ya en la base de datos.
     """
-    from app.models import Song
+    from app.models import Song, Artist
+    from datetime import datetime
     
     # crear todas las tablas
     Base.metadata.create_all(engine)
@@ -53,6 +54,23 @@ def init_db():
         
         if existing_songs:
             return
+        
+        default_artists = [
+            Artist(name="ABBA", birth_date=datetime(1972, 1, 1)),
+            Artist(name="Amaral", birth_date=datetime(1972, 8, 4)),
+            Artist(name="Ludwig van Beethoven", birth_date=None),
+            Artist(name="Joan Manuel Serrat", birth_date=None),
+            Artist(name="Darren Korb", birth_date=None),
+            Artist(name="Michael Jackson", birth_date=None),
+            Artist(name="Nirvana", birth_date=None)
+        ]
+        
+        db.add_all(default_artists)
+        db.commit()
+        
+        # refresca los artistas para obtener su id
+        for artist in default_artists:
+            db.refresh(artist)
         
         default_songs = [
             Song(title="Mamma Mia", artist="ABBA", duration_seconds=300, explicit=False),
