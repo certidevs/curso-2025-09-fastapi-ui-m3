@@ -3,11 +3,14 @@ from fastapi import APIRouter, HTTPException, Request, Depends
 from fastapi.responses import HTMLResponse
 from sqlalchemy.orm import Session
 from sqlalchemy import select
+
 from app.database import get_db
 from app.models import Song
 
+# configuración de Jinja2Templates
 templates = Jinja2Templates(directory="app/templates")
 
+# router para rutas web
 router = APIRouter(prefix="/songs", tags=["web"])
 
 # listar canciones (http://localhost:8000/songs)
