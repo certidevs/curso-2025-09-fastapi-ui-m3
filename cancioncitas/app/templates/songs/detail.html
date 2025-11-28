@@ -4,36 +4,69 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>🐦‍⬛🎶 Detalle de canción</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css" integrity="sha512-2SwdPD6INVrV/lHTZbO2nodKhrnDdJK9/kg2XD1r9uGqPo1cUbujc+IYdlYdEErWNu69gVcYgdxlmVmzTWnetw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 </head>
 <body>
-    <h1>Detalle de canción 🐦‍⬛🎶</h1>
+    <div class="container mt-5">
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <div class="card shadow" style="width: 32rem;">
+                    <div class="card-header bg-primary text-white">
+                        <h2 class="card-title mb-0">
+                            <i class="fa-solid fa-music"></i> Detalle de canción
+                        </h2>
+                    </div>
+                    
+                    <div class="card-body">
+                        <div class="mb-3">
+                            <h5 class="text-body-secondary">ID</h5>
+                            <p class="fs-5">{{ song.id }}</p>
+                        </div>
+                        <hr>
+                        <div class="mb-3">
+                            <h5 class="text-body-secondary">Título</h5>
+                            <p class="fs-4 fw-bold">{{ song.title }}</p>
+                        </div>
+                        <hr>
+                        <div class="mb-3">
+                            <h5 class="text-body-secondary">Artista</h5>
+                            <p class="fs-5">{{ song.artist }}</p>
+                        </div>
+                        <hr>
+                        <div class="mb-3">
+                            <h5 class="text-body-secondary">Duración</h5> 
+                            <p class="fs-5">
+                                {% if song.duration_seconds is not none %}
+                                    {% set minutes = song.duration_seconds // 60 %}
+                                    {% set seconds = song.duration_seconds % 60 %}
+                                    {{ song.duration_seconds }} segundos ({{ "%d:%02d"|format(minutes, seconds) }})
+                                {% else %}
+                                    <span class="text-body-secondary">No especificado</span>
+                                {% endif %}
+                            </p>
+                        </div>
+                        <hr>
+                        <div class="mb-3">
+                            <h5 class="text-body-secondary">Explícita</h5>
+                                <p class="fs-5">
+                                    {% if song.explicit is none %}
+                                        <span class="text-body-secondary">No especificado</span>
+                                    {% elif song.explicit %}
+                                        <span class="badge bg-danger">Sí</span>
+                                    {% else %}
+                                        <span class="badge bg-success">No</span>
+                                    {% endif %}
+                                </p>
+                        </div>
+                    </div>
 
-    <div>
-        <div>ID: <span>{{ song.id }}</span></div>
-        <div>Título: <span>{{ song.title }}</span></div>
-        <div>Artista: <span>{{ song.artist }}</span></div>
-        <div>Duración: <span>
-            {% if song.duration_seconds is not none %}
-                {% set minutes = song.duration_seconds // 60 %}
-                {% set seconds = song.duration_seconds % 60 %}
-                {{ song.duration_seconds }} segundos ({{ "%d:%02d"|format(minutes, seconds) }})
-            {% else %}
-                No especificado
-            {% endif %}
-        </span></div>
-        <div>Explícita: <span>
-            {% if song.explicit is none %}
-                No especificado
-            {% elif song.explicit %}
-                Sí
-            {% else %}
-                No
-            {% endif %}
-        </span></div>
+                    <div class="card-footer">
+                        <a href="/songs" class="btn btn-secondary"><i class="fa-solid fa-arrow-left"></i> Volver a la lista</a>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
-
-    <br>
-    
-    <a href="/songs">Volver a la lista</a>
 </body>
 </html>
