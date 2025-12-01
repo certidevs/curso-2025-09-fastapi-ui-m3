@@ -13,11 +13,11 @@
 ### PASOS
 - Decidir entidades y relaciones: 100%
 - Configuración BBDD: 100%
-- Modelos SQLAlchemy: 20%
-- Schemas Pydantic: 20%
-- API REST CRUD: 20%
-- Controladores web: 20%
-- Pantallas HTML: 20%
+- Modelos SQLAlchemy: 80%
+- Schemas Pydantic: 80%
+- API REST CRUD: 80%
+- Controladores web: 50%
+- Pantallas HTML: 60%
 
 ---
 
@@ -33,9 +33,9 @@
 ### PASOS
 - Decidir entidades y relaciones: 100%
 - Configuración BBDD: 100%
-- Modelos SQLAlchemy: 75%
+- Modelos SQLAlchemy: 80%
 - Schemas Pydantic: 75%
-- API REST CRUD: 75%
+- API REST CRUD: 80%
 - Controladores web: 0%
 - Pantallas HTML: 0%
 
@@ -50,17 +50,16 @@
 - Javi
 - Reyes
 - Kary
-- Iñaki
 - Manuel
 
 ### PASOS
 - Decidir entidades y relaciones: 100%
-- Configuración BBDD: 75%
-- Modelos SQLAlchemy: 70%
-- Schemas Pydantic: 60%
-- API REST CRUD: 50%
+- Configuración BBDD: 90%
+- Modelos SQLAlchemy: 100%
+- Schemas Pydantic: 80%
+- API REST CRUD: 70%
 - Controladores web: 0%
-- Pantallas HTML: 0%
+- Pantallas HTML: 20%
 
 ---
 
@@ -72,13 +71,12 @@
 
 - **Rafael**
 - Deme
-- Rares
 - Alejandro Gómez
 
 ### PASOS
 - Decidir entidades y relaciones: 100%
 - Configuración BBDD: 70%
-- Modelos SQLAlchemy: 25%
+- Modelos SQLAlchemy: 75%
 - Schemas Pydantic: 25%
 - API REST CRUD: 0%
 - Controladores web: 0%
