@@ -1,6 +1,6 @@
 from fastapi.templating import Jinja2Templates
-from fastapi import APIRouter, HTTPException, Request, Depends
-from fastapi.responses import HTMLResponse
+from fastapi import APIRouter, Form, HTTPException, Request, Depends
+from fastapi.responses import HTMLResponse, RedirectResponse
 from sqlalchemy.orm import Session
 from sqlalchemy import select
 
@@ -30,6 +30,76 @@ def show_create_form(request: Request):
         "songs/form.html",
         {"request": request, "song": None}
     )
+
+# crear nueva canción
+@router.post("/new", response_class=HTMLResponse)
+def create_song(
+    request: Request,
+    title: str = Form(...),
+    artist: str = Form(...),
+    duration_seconds: str = Form(None),
+    explicit: str = Form(""),
+    db: Session = Depends(get_db)
+):
+    errors = []
+    form_data = {
+        "title": title,
+        "artist": artist,
+        "duration_seconds": duration_seconds,
+        "explicit": explicit
+    }
+    
+    # validar y convertir duration_seconds
+    duration_value = None
+    if duration_seconds and duration_seconds.strip():
+        try:
+            duration_value = int(duration_seconds)
+            if duration_value < 0:
+                errors.append("La duración debe ser un número positivo")
+        except ValueError:
+            errors.append("La duración debe ser un número válido")
+    
+    # validar explicit
+    explicit_value = None
+    if explicit == "true":
+        explicit_value = True
+    elif explicit == "false":
+        explicit_value = False
+    
+    # validar campos obligatorios
+    if not title or not title.strip():
+        errors.append("El título es requerido")
+    if not artist or not artist.strip():
+        errors.append("El artista es requerido")
+    
+    # si hay errores, mostrar el formulario con los errores
+    if errors:
+        return templates.TemplateResponse(
+            "songs/form.html",
+            {"request": request, "song": None, "errors": errors, "form_data": form_data}
+        )
+    
+    # crear la canción
+    try:
+        song = Song(
+            title = title.strip(),
+            artist = artist.strip(),
+            duration_seconds = duration_value,
+            explicit = explicit_value
+        )
+        db.add(song)
+        db.commit()
+        db.refresh(song)
+        
+        # redirigir a pantalla detalle
+        return RedirectResponse(url=f"/songs/{song.id}", status_code=303)
+    except Exception as e:
+        db.rollback()
+        errors.append(f"Error al crear la canción: {str(e)}")
+        return templates.TemplateResponse(
+            "songs/form.html",
+            {"request": request, "song": None, "errors": errors, "form_data": form_data}
+        )
 
 # detalle canción (http://localhost:8000/songs/5)
 @router.get("/{song_id}", response_class=HTMLResponse)
