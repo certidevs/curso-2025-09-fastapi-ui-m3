@@ -4,24 +4,49 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>🐦‍⬛🎶 Detalle de artista</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css" integrity="sha512-2SwdPD6INVrV/lHTZbO2nodKhrnDdJK9/kg2XD1r9uGqPo1cUbujc+IYdlYdEErWNu69gVcYgdxlmVmzTWnetw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 </head>
 <body>
-    <h1>Detalle de artista</h1>
-
-    <div>
-        <div>ID: <span>{{ artist.id }}</span></div>
-        <div>Nombre: <span>{{ artist.name }}</span></div>
-        <div>Fecha de nacimiento: <span>
-            {% if artist.birth_date %}
-                {{ artist.birth_date.strftime('%d/%m/%Y') }}
-            {% else %}
-                No especificado
-            {% endif %}
-        </span></div>
+    <div class="container mt-5">
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <div class="card shadow" style="width: 32rem;">
+                    <div class="card-header bg-primary text-white">
+                        <h2 class="card-title mb-0">
+                            <i class="fa-solid fa-user"></i> Detalle de artista
+                        </h2>
+                    </div>
+                    
+                    <div class="card-body">
+                        <div class="mb-3">
+                            <h5 class="text-body-secondary">ID</h5>
+                            <p class="fs-5">{{ artist.id }}</p>
+                        </div>
+                        <hr>
+                        <div class="mb-3">
+                            <h5 class="text-body-secondary">Nombre</h5>
+                            <p class="fs-4 fw-bold">{{ artist.name }}</p>
+                        </div>
+                        <hr>
+                        <div class="mb-3">
+                            <h5 class="text-body-secondary">Fecha de nacimiento</h5>
+                            <p class="fs-5">
+                                {% if artist.birth_date %}
+                                    {{ artist.birth_date.strftime('%d/%m/%Y') }}
+                                {% else %}
+                                    <span class="text-body-secondary">No especificado</span>
+                                {% endif %}
+                            </p>
+                        </div>
+                    </div>
+    
+                    <div class="card-footer">
+                        <a href="/artists" class="btn btn-secondary"><i class="fa-solid fa-arrow-left"></i> Volver al listado</a>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
-
-    <br>
-
-    <a href="/artists">Volver al listado</a>
 </body>
 </html>
