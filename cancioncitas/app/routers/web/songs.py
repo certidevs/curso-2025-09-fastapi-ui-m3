@@ -23,6 +23,14 @@ def list_songs(request: Request, db: Session = Depends(get_db)):
         {"request": request, "songs": songs}
     )
 
+# mostrar formulario crear
+@router.get("/new", response_class=HTMLResponse)
+def show_create_form(request: Request):
+    return templates.TemplateResponse(
+        "songs/form.html",
+        {"request": request, "song": None}
+    )
+
 # detalle canción (http://localhost:8000/songs/5)
 @router.get("/{song_id}", response_class=HTMLResponse)
 def song_detail(request: Request, song_id: int, db: Session = Depends(get_db)):
