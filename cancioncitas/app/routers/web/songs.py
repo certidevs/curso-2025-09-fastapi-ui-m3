@@ -113,3 +113,18 @@ def song_detail(request: Request, song_id: int, db: Session = Depends(get_db)):
         "songs/detail.html",
         {"request": request, "song": song}
     )
+
+# mostrar formulario editar
+@router.get("/{song_id}/edit", response_class=HTMLResponse)
+def show_edit_form(request: Request, song_id: int, db: Session = Depends(get_db)):
+    # obtener canción por id
+    song = db.execute(select(Song).where(Song.id == song_id)).scalar_one_or_none()
+    
+    # lanzar error 404 si no existe canción
+    if song is None:
+        raise HTTPException(status_code=404, detail="404 - Canción  no encontrada")
+    
+    return templates.TemplateResponse(
+        "songs/form.html",
+        {"request": request, "song": song}
+    )
