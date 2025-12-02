@@ -11,7 +11,126 @@
     <div class="container mt-5">
         <div class="row justify-content-center">
             <div class="col-md-8">
+                <div class="card shadow">
+                    <div class="card-header bg-primary text-white">
+                        <h2 class="card-title mb-0">
+                            <i class="fa-solid fa-{% if song %}pen-to-square{% else %}plus{% endif %}"></i>
+                            {% if song %}Editar canción{% else %}Crear nueva canción{% endif %}
+                        </h2>
+                    </div>
+                    <div class="card-body">
+                        {% if errors %}
+                        <div class="alert alert-danger" role="alert">
+                            <h5 class="alert-heading">
+                                <i class="fa-solid fa-triangle-exclamation"></i> Errores de validación:
+                            </h5>
+                            <ul class="mb-0">
+                                {% for error in errors %}
+                                <li>{{ error }}</li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                        {% endif %}
 
+                        <form method="post" action="{% if song %}/songs/{{ song.id }}/edit{% else %}/songs/new{% endif %}">
+                            <div class="mb-3">
+                                <label for="title" class="form-label">Título <span class="text-danger">*</span></label>
+                                <input
+                                    type="text"
+                                    class="form-control"
+                                    id="title"
+                                    name="title"
+                                    value="{% if form_data %}{{ form_data.get('title', '') }}{% elif song %}{{ song.title }}{% endif %}"
+                                    required
+                                    maxlength="200"
+                                >
+                                <div class="form-text">El título de la canción (máximo 200 caracteres)</div>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="artist" class="form-label">Artista <span class="text-danger">*</span></label>
+                                <input
+                                    type="text"
+                                    class="form-control"
+                                    id="artist"
+                                    name="artist"
+                                    value="{% if form_data %}{{ form_data.get('artist', '') }}{% elif song %}{{ song.artist }}{% endif %}"
+                                    required
+                                    maxlength="200"
+                                >
+                                <div class="form-text">El nombre del artista (máximo 200 caracteres)</div>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="duration_seconds" class="form-label">Duración (segundos)</label>
+                                <input
+                                    type="number"
+                                    class="form-control"
+                                    id="duration_seconds"
+                                    name="duration_seconds"
+                                    value="{% if form_data and form_data.get('duration_seconds') %}{{ form_data.get('duration_seconds') }}{% elif song and song.duration_seconds is not none %}{{ song.duration_seconds }}{% endif %}"
+                                    min="0"
+                                    step="1"
+                                >
+                                <div class="form-text">Duración de la canción en segundos (opcional, debe ser un número positivo)</div>
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label">Explícita</label>
+                                <div>
+                                    <div class="form-check form-check-inline">
+                                        <input
+                                            class="form-check-input"
+                                            type="radio"
+                                            name="explicit"
+                                            id="explicit_none"
+                                            value=""
+                                            {% if form_data and form_data.get('explicit') == '' %}checked{% elif not song or song.explicit is none %}checked{% endif %}
+                                        >
+                                        <label class="form-check-label" for="explicit_none">
+                                            No especificado
+                                        </label>
+                                    </div>
+                                    <div class="form-check form-check-inline">
+                                        <input
+                                            class="form-check-input"
+                                            type="radio"
+                                            name="explicit"
+                                            id="explicit_true"
+                                            value="true"
+                                            {% if form_data and form_data.get('explicit') == 'true' %}checked{% elif song and song.explicit is not none and song.explicit %}checked{% endif %}
+                                        >
+                                        <label class="form-check-label" for="explicit_true">
+                                            Sí
+                                        </label>
+                                    </div>
+                                    <div class="form-check form-check-inline">
+                                        <input
+                                            class="form-check-input"
+                                            type="radio"
+                                            name="explicit"
+                                            id="explicit_false"
+                                            value="false"
+                                            {% if form_data and form_data.get('explicit') == 'false' %}checked{% elif song and song.explicit is not none and not song.explicit %}checked{% endif %}
+                                        >
+                                        <label class="form-check-label" for="explicit_false">
+                                            No
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="d-flex justify-content-between">
+                                <a href="/song" class="btn btn-secondary">
+                                    <i class="fa-solid fa-arrow-left me-2"></i>Cancelar
+                                </a>
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="fa-solid fa-floppy-disk me-2"></i>{% if song %}Actualizar{% else %}Crear{% endif %} canción
+                                </button>
+                            </div> 
+                        </form>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
