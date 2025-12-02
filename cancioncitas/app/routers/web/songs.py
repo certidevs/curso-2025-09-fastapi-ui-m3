@@ -196,3 +196,21 @@ def update_song(
             "songs/form.html",
             {"request": request, "song": song, "errors": errors, "form_data": form_data}
         )
+
+# eliminar canción
+@router.post("/{song_id}/delete", response_class=HTMLResponse)
+def delete_song(request: Request, song_id: int, db: Session = Depends(get_db)):
+    song = db.execute(select(Song).where(Song.id == song_id)).scalar_one_or_none()
+    
+    if song is None:
+        raise HTTPException(status_code=404, detail="404 - Canción no encontrada")
+    
+    # eliminar canción
+    try:
+        db.delete(song)
+        db.commit()
+        
+        return RedirectResponse("/songs", status_code=303)
+    except Exception as e:
+        db.rollback()
+        raise HTTPException(status_code=500, detail=f"Error al eliminar la canción: {str(e)}")
