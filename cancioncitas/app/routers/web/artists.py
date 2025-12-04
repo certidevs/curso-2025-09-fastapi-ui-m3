@@ -1,8 +1,9 @@
-from fastapi import APIRouter, Depends, HTTPException, Request
-from fastapi.responses import HTMLResponse
+from fastapi import APIRouter, Depends, Form, HTTPException, Request
+from fastapi.responses import HTMLResponse, RedirectResponse
 from fastapi.templating import Jinja2Templates
 from sqlalchemy.orm import Session
 from sqlalchemy import select
+from datetime import datetime
 
 from app.database import get_db
 from app.models import Artist
@@ -30,6 +31,54 @@ def show_create_form(request: Request):
         "artists/form.html",
         {"request": request, "artist": None}
     )
+
+# crear nuevo artista
+@router.post("/new", response_class=HTMLResponse)
+def create_artist(
+    request: Request,
+    name: str = Form(...),
+    birth_date: str = Form(None),
+    db: Session = Depends(get_db)
+):
+    errors = []
+    form_data = {
+        "name": name,
+        "birth_date": birth_date
+    }
+    
+    birth_date_value = None
+    if birth_date and birth_date.strip():
+        try:
+            birth_date_value = datetime.strptime(birth_date.strip(), "%Y-%m-%d")
+        except ValueError:
+            errors.append("La fecha de nacimiento tiene que tener el formato YYYY-MM-DD")
+    
+    if not name or not name.strip():
+        errors.append("El nombre es requerido")
+    
+    if errors:
+        return templates.TemplateResponse(
+            "artists/form.html",
+            {"request": request, "artist": None, "errors": errors, "form_data": form_data}
+        )
+    
+    try:
+        artist = Artist(
+            name=name.strip(),
+            birth_date=birth_date_value
+        )
+        db.add(artist)
+        db.commit()
+        db.refresh(artist)
+        
+        return RedirectResponse(url=f"/artists/{artist.id}", status_code=303)
+    except Exception as e:
+        db.rollback()
+        errors.append(f"Error al crear el artista: {str(e)}")
+        return templates.TemplateResponse(
+            "artists/form.html",
+            {"request": request, "artist": None, "errors": errors, "form_data": form_data}
+        )
 
 # detalle artista (http://localhost:8000/artists/5)
 @router.get("/{artist_id}", response_class=HTMLResponse)
