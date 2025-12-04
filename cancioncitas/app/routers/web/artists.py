@@ -92,3 +92,16 @@ def artist_detail(request: Request, artist_id: int, db: Session = Depends(get_db
         "artists/detail.html",
         {"request": request, "artist": artist}
     )
+
+# mostrar formulario editar
+@router.get("/{artist_id}/edit", response_class=HTMLResponse)
+def show_edit_form(request: Request, artist_id: int, db: Session = Depends(get_db)):
+    artist = db.execute(select(Artist).where(Artist.id == artist_id)).scalar_one_or_none()
+    
+    if artist is None:
+        raise HTTPException(status_code=404, detail="404 - Artista no encontrado")
+    
+    return templates.TemplateResponse(
+        "artists/form.html",
+        {"request": request, "artist": artist}
+    )
