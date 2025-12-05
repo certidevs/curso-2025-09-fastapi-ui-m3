@@ -19,3 +19,7 @@
     - Ideas para desarrollos futuros: añadir login, desarrollar roles, vamos a hacer la compra funcional, bla bla bla
 - Agradecimientos: agradecer a Fundación Adecco, a profesores, a mentores, a las empresas que vienen...
 - Dudas, ruegos y sugerencias
+
+### Ejemplo de presentación
+
+https://docs.google.com/presentation/d/1i2S12ai5SibwkRucicDkVHNuOF7PwK9RnOMIgpf1R5A/edit?usp=sharing
