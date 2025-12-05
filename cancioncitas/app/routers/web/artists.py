@@ -169,3 +169,25 @@ def update_artist(
             "artists/form.html",
             {"request": request, "artist": artist, "errors": errors, "form_data": form_data}
         )
+
+# eliminar artista
+@router.post("/{artist_id}/delete", response_class=HTMLResponse)
+def delete_artist(request: Request, artist_id: int, db: Session = Depends(get_db)):
+    # obtenemos el artista en base de datos
+    artist = db.execute(select(Artist).where(Artist.id == artist_id)).scalar_one_or_none()
+    
+    # si no hay artista, lanzar excepción
+    if artist is None:
+        raise HTTPException(status_code=404, detail="404 - Artista no encontrado")
+    
+    # eliminar el artista
+    try:
+        db.delete(artist)
+        db.commit()
+        
+        # redirigir a la lista de artista
+        return RedirectResponse(url="/artists", status_code=303)
+    except Exception as e:
+        # deshacemos los cambios si da error
+        db.rollback()
+        raise HTTPException(status_code=500, detail=f"Error al eliminar el artista: {str(e)}")
