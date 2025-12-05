@@ -39,6 +39,14 @@
                     </td>
                     <td>
                         <a href="/artists/{{ artist.id }}" class="btn btn-info"><i class="fa-solid fa-eye"></i> Ver</a>
+                        <a href="/artists/{{ artist.id }}/edit" class="btn btn-warning">
+                            <i class="fa-solid fa-pen-to-square"></i> Editar
+                        </a>
+                        <form method="post" action="/artists/{{ artist.id }}/delete" style="display: inline" onsubmit="return confirm('¿Estás seguro de que quieres eliminar este artista?');">
+                            <button type="submit" class="btn btn-danger">
+                                <i class="fa-solid fa-trash-can"></i> Eliminar
+                            </button>
+                        </form>
                     </td>
                 </tr>
                 {% endfor %}

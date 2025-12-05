@@ -43,6 +43,14 @@
     
                     <div class="card-footer">
                         <a href="/artists" class="btn btn-secondary"><i class="fa-solid fa-arrow-left"></i> Volver al listado</a>
+                        <a href="/artists/{{ artist.id }}/edit" class="btn btn-warning">
+                            <i class="fa-solid fa-pen-to-square"></i> Editar
+                        </a>
+                        <form method="post" action="/artists/{{ artist.id }}/delete" style="display: inline" onsubmit="return confirm('¿Estás seguro de que quieres eliminar este artista?');">
+                            <button type="submit" class="btn btn-danger">
+                                <i class="fa-solid fa-trash-can"></i> Eliminar
+                            </button>
+                        </form>
                     </div>
                 </div>
             </div>
