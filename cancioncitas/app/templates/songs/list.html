@@ -48,6 +48,11 @@
                         <a href="/songs/{{ song.id }}/edit" class="btn btn-warning">
                             <i class="fa-solid fa-pen-to-square"></i> Editar
                         </a>
+                        <form method="post" action="/songs/{{ song.id }}/delete" style="display: inline" onsubmit="return confirm('¿Estás seguro de que quieres eliminar esta canción?');">
+                            <button type="submit" class="btn btn-danger">
+                                <i class="fa-solid fa-trash-can"></i> Eliminar
+                            </button>
+                        </form>
                     </td>
                 </tr>
                 {% endfor %}
