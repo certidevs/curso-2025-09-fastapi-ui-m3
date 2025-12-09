@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% if artist %}🐦‍⬛🎶 Editar artista{% else %}🐦‍⬛🎶 Crear artista{% endif %}</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css" integrity="sha512-2SwdPD6INVrV/lHTZbO2nodKhrnDdJK9/kg2XD1r9uGqPo1cUbujc+IYdlYdEErWNu69gVcYgdxlmVmzTWnetw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+</head>
+<body>
+    <div class="container mt-5">
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <div class="card shadow">
+                    <div class="card-header bg-primary text-white">
+                        <h2 class="card-title mb-0">
+                            <i class="fa-solid fa-{% if artist %}pen-to-square{% else %}plus{% endif %}"></i>
+                            {% if artist %}Editar artista{% else %}Crear nuevo artista{% endif %}
+                        </h2>
+                    </div>
+                    <div class="card-body">
+                        {% if errors %}
+                        <div class="alert alert-danger" role="alert">
+                            <h5 class="alert-heading"><i class="fa-solid fa-triangle-exclamation"></i> Errores de validación</h5>
+                            <ul class="mb-0">
+                                {% for error in errors %}
+                                <li>{{ error }}</li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                        {% endif %}
+
+                        <form method="post" action="{% if artist %}/artists/{{ artist.id }}/edit{% else %}/artists/new{% endif %}">
+                            <div class="mb-3">
+                                <label for="name" class="form-label">Nombre <span class="text-danger">*</span></label>
+                                <input
+                                    type="text"
+                                    class="form-control"
+                                    id="name"
+                                    name="name"
+                                    value="{% if form_data %}{{ form_data.get('name', '') }}{% elif artist %}{{ artist.name }}{% endif %}"
+                                    required
+                                    maxlength="200"
+                                >
+                                <div class="form-text">El nombre del artista (máximo 200 caracteres)</div>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="birth_date" class="form-label">Fecha de nacimiento</label>
+                                <input
+                                    type="date"
+                                    class="form-control"
+                                    id="birth_date"
+                                    name="birth_date"
+                                    value="{% if form_data and form_data.get('birth_date') %}{{ form_data.get('birth_data') }}{% elif artist and artist.birth_date %}{{ artist.birth_date.strftime('%Y-%m-%d') }}{% endif %}"
+                                >
+                                <div class="form-text">Fecha de nacimiento del artista (opcional)</div>
+                            </div>
+
+                            <div class="d-flex justify-content-between">
+                                <a href="/artist" class="btn btn-secondary">
+                                    <i class="fa-solid fa-arrow-left me-2"></i>Cancelar
+                                </a>
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="fa-solid fa-floppy-disk me-2"></i>{% if artist %}Actualizar{% else %}Crear{% endif %} artista
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
+</body>
+</html>
