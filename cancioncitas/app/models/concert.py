@@ -3,7 +3,7 @@ from sqlalchemy import Integer, String, Float, Enum, Boolean, DateTime, ForeignK
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from datetime import datetime
 from app.database import Base
-from app.models import Artist
+from app.models.artist import Artist
 
 class ConcertStatus(enum.Enum):
     SCHEDULED = "scheduled"
