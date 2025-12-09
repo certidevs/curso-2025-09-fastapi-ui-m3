@@ -36,8 +36,8 @@
 - Modelos SQLAlchemy: 100%
 - Schemas Pydantic: 100%
 - API REST CRUD: 100%
-- Controladores web: 40%
-- Pantallas HTML: 40%
+- Controladores web: 70%
+- Pantallas HTML: 70%
 
 ---
 
@@ -57,9 +57,9 @@
 - Configuración BBDD: 90%
 - Modelos SQLAlchemy: 100%
 - Schemas Pydantic: 80%
-- API REST CRUD: 70%
-- Controladores web: 40%
-- Pantallas HTML: 20%
+- API REST CRUD: 80%
+- Controladores web: 60%
+- Pantallas HTML: 50%
 
 ---
 
@@ -79,8 +79,8 @@
 - Modelos SQLAlchemy: 75%
 - Schemas Pydantic: 25%
 - API REST CRUD: 0%
-- Controladores web: 0%
-- Pantallas HTML: 0%
+- Controladores web: 0% (priorizar)
+- Pantallas HTML: 0% (priorizar)
 
 ---
 ---
