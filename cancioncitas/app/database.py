@@ -42,7 +42,7 @@ def init_db():
     Inicializa la base de datos con canciones por defecto si está vacía.
     Sólo crea las canciones si no existen ya en la base de datos.
     """
-    from app.models import Song, Artist
+    from app.models import Song, Artist, Concert, ConcertStatus
     from datetime import datetime
     
     # crear todas las tablas
@@ -68,6 +68,10 @@ def init_db():
         db.add_all(default_artists)
         db.commit()
         
+        # obtener los artistas para tener sus ids
+        artists = db.execute(select(Artist)).scalars().all()
+        artist_dict = {artist.name: artist.id for artist in artists}
+        
         # refresca los artistas para obtener su id
         for artist in default_artists:
             db.refresh(artist)
@@ -84,6 +88,62 @@ def init_db():
         
         # agregar las canciones
         db.add_all(default_songs)
+        db.commit()
+        
+        default_concerts = [
+            Concert(
+                name="ABBA - Primera gira",
+                price=85.00,
+                capacity=50000,
+                status=ConcertStatus.SCHEDULED,
+                is_sold_out=False,
+                date_time=datetime(2026, 6, 15, 20, 0),
+                img_url="https://placehold.co/600x400?text=ABBA+Primera+Gira",
+                artist_id=artist_dict.get("ABBA")
+            ),
+            Concert(
+                name="ABBA - Segunda gira",
+                price=99.99,
+                capacity=20000,
+                status=ConcertStatus.SCHEDULED,
+                is_sold_out=False,
+                date_time=datetime(2026, 8, 20, 8, 0),
+                img_url="https://placehold.co/600x400?text=ABBA+Segunda+Gira",
+                artist_id=artist_dict.get("ABBA")
+            ),
+            Concert(
+                name="Amaral - Hacia lo salvaje",
+                price=5.00,
+                capacity=8000,
+                status=ConcertStatus.SCHEDULED,
+                is_sold_out=False,
+                date_time=datetime(2026, 10, 12, 17, 30),
+                img_url="https://placehold.co/600x400?text=Amaral+Concierto",
+                artist_id=artist_dict.get("Amaral")
+            ),
+            Concert(
+                name="Supergiant Games - Pyre",
+                price=50.00,
+                capacity=50000,
+                status=ConcertStatus.COMPLETED,
+                is_sold_out=True,
+                date_time=datetime(2026, 12, 12, 12, 0),
+                img_url="https://placehold.co/600x400?text=Supergiant+Pyre",
+                artist_id=artist_dict.get("Darren Korb")
+            ),
+            Concert(
+                name="Supergiant Games - Hades",
+                price=20.00,
+                capacity=70000,
+                status=ConcertStatus.CANCELLED,
+                is_sold_out=False,
+                date_time=datetime(2027, 3, 1, 13, 0),
+                img_url="https://placehold.co/600x400?text=Supergiant+Hades",
+                artist_id=artist_dict.get("Darren Korb")
+            )
+        ]
+        
+        db.add_all(default_concerts)
         db.commit()
     finally:
         db.close()

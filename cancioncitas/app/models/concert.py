@@ -24,6 +24,7 @@ class Concert(Base):
     
     status: Mapped[ConcertStatus] = mapped_column(Enum(ConcertStatus), 
                                                   nullable=False, default=ConcertStatus.SCHEDULED)
+    
     is_sold_out: Mapped[bool | None] = mapped_column(Boolean, nullable=True, default=False)
     
     date_time: Mapped[datetime] = mapped_column(DateTime, nullable=False)
