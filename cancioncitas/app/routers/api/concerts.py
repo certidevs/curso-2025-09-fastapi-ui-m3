@@ -4,7 +4,7 @@ from sqlalchemy.orm import Session, joinedload
 
 from app.database import get_db
 from app.models import Concert
-from app.schemas import ConcertResponse, ConcertCreate
+from app.schemas import ConcertResponse, ConcertCreate, ConcertPatch
 
 router = APIRouter(prefix="/api/concerts", tags=["concerts"])
 
@@ -58,3 +58,28 @@ def create(concert_dto: ConcertCreate, db: Session = Depends(get_db)):
     ).scalar_one()
     
     return concert_with_artist
+
+# actualizar parcialmente un concierto
+@router.patch("/{id}", response_model=ConcertResponse)
+def update_partial(id: int, concert_dto: ConcertPatch, db: Session = Depends(get_db)):
+    concert = db.execute(
+        select(Concert)
+        .where(Concert.id == id)
+        .options(joinedload(Concert.artist))
+    ).scalar_one_or_none()
+    
+    if not concert:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=f"No se ha encontrado el concierto con id {id}"
+        )
+    
+    update_data = concert_dto.model_dump(exclude_unset=True)
+    
+    for field, value in update_data.items():
+        setattr(concert, field, value)
+    
+    db.commit()
+    db.refresh(concert)
+    
+    return concert
