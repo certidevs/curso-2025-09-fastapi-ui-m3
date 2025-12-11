@@ -83,3 +83,21 @@ def update_partial(id: int, concert_dto: ConcertPatch, db: Session = Depends(get
     db.refresh(concert)
     
     return concert
+
+# eliminar un concierto
+@router.delete("/{id}", status_code=status.HTTP_204_NO_CONTENT)
+def delete_by_id(id: int, db: Session = Depends(get_db)):
+    concert = db.execute(
+        select(Concert).where(Concert.id == id)
+    ).scalar_one_or_none()
+    
+    if not concert:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=f"No se ha encontrado el concierto con id {id}"
+        )
+    
+    db.delete(concert)
+    db.commit()
+    
+    return None
