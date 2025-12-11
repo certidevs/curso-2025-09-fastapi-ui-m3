@@ -14,3 +14,20 @@ def find_all(db: Session = Depends(get_db)):
     return db.execute(
         select(Concert).options(joinedload(Concert.artist))
     ).scalars().unique().all()
+
+# obtener un concierto
+@router.get("/{id}", response_model=ConcertResponse)
+def find_by_id(id: int, db: Session = Depends(get_db)):
+    concert = db.execute(
+        select(Concert)
+        .where(Concert.id == id)
+        .options(joinedload(Concert.artist))
+    ).scalar_one_or_none()
+    
+    if not concert:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=f"No se ha encontrado el concierto con id {id}"
+        )
+    
+    return concert
