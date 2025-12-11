@@ -74,3 +74,73 @@ class ConcertCreate(BaseModel):
             raise ValueError("El id del artista debe ser un número positivo")
         
         return v
+
+class ConcertPatch(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+    
+    name: str | None = None
+    price: float | None = None
+    capacity: int | None = None
+    status: ConcertStatus | None = None
+    is_sold_out: bool | None = None
+    date_time: datetime | None = None
+    img_url: str | None = None
+    artist_id: int | None = None
+    
+    @field_validator("name")
+    @classmethod
+    def validate_name_not_empty(cls, v: str | None) -> str | None:
+        if v is None:
+            return None
+        
+        if not v or not v.strip():
+            raise ValueError("El nombre no puede estar vacío")
+        
+        if len(v.strip()) > 200:
+            raise ValueError("El nombre no puede exceder 200 caracteres")
+        
+        return v.strip()
+    
+    @field_validator("price")
+    @classmethod
+    def validate_price_positive(cls, v: float | None) -> float | None:
+        if v is None:
+            return None
+        
+        if v < 0:
+            raise ValueError("El precio debe ser un número positivo")
+        
+        return v
+    
+    @field_validator("capacity")
+    @classmethod
+    def validate_capacity_positive(cls, v: int | None) -> int | None:
+        if v is None:
+            return None
+        
+        if v < 0:
+            raise ValueError("La capacidad debe ser un número positivo")
+        
+        return v
+    
+    @field_validator("img_url")
+    @classmethod
+    def validate_img_url_length(cls, v: str | None) -> str | None:
+        if v is None:
+            return None
+        
+        if len(v.strip()) > 500:
+            raise ValueError("La url de la imagen no puede exceder 500 caracteres")
+        
+        return v.strip()
+    
+    @field_validator("artist_id")
+    @classmethod
+    def validate_artist_id_positive(cls, v: int | None) -> int | None:
+        if v is None:
+            return None
+        
+        if v < 1:
+            raise ValueError("El id del artista debe ser un número positivo")
+        
+        return v
