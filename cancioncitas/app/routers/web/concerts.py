@@ -3,6 +3,7 @@ from fastapi import APIRouter, Form, HTTPException, Request, Depends
 from fastapi.responses import HTMLResponse, RedirectResponse
 from sqlalchemy.orm import Session, joinedload
 from sqlalchemy import select
+from datetime import datetime
 
 from app.database import get_db
 from app.models import Concert, Artist, ConcertStatus
@@ -30,6 +31,97 @@ def show_create_form(request: Request, db: Session = Depends(get_db)):
         "concerts/form.html",
         {"request": request, "concert": None, "artists": artists, "statuses": ConcertStatus}
     )
+
+@router.post("/new", response_class=HTMLResponse)
+def create_concert(
+    request: Request,
+    name: str = Form(...),
+    price: str = Form(...),
+    capacity: str = Form(None),
+    status: str = Form(...),
+    is_sold_out: str = Form(None),
+    date_time: str = Form(...),
+    img_url: str = Form(None),
+    artist_id: str = Form(...),
+    db: Session = Depends(get_db)
+):
+    errors = []
+    form_data = {
+        "name": name,
+        "price": price,
+        "capacity": capacity,
+        "status": status,
+        "is_sold_out": is_sold_out,
+        "date_time": date_time,
+        "img_url": img_url,
+        "artist_id": artist_id
+    }
+    
+    artists = db.execute(select(Artist)).scalars().all()
+    
+    price_value = None
+    if price and price.strip():
+        try:
+            price_value = float(price.strip())
+            if price_value < 0:
+                errors.append("El precio debe ser un número positivo")
+        except ValueError:
+            errors.append("El precio debe ser un número válido")
+    else:
+        errors.append("El precio es requerido")
+    
+    capacity_value = None
+    if capacity and capacity.strip():
+        try:
+            capacity_value = int(capacity.strip())
+            if capacity_value < 0:
+                errors.append("La capacidad debe ser un número positivo")
+        except ValueError:
+            errors.append("La capacidad debe ser un número válido")
+    
+    status_value = None
+    try:
+        status_value = ConcertStatus(status)
+    except ValueError:
+        errors.append("El estado debe ser scheduled, cancelled o completed")
+    
+    is_sold_out_value = False
+    if is_sold_out and (is_sold_out == "true" or is_sold_out == "on"):
+        is_sold_out_value = True
+    
+    datetime_value = None
+    if date_time and date_time.strip():
+        try:
+            datetime_value = datetime.strptime(date_time.strip(), "%Y-%m%dT%H:%M")
+        except ValueError:
+            errors.append("La fecha y hora deben tener el formato YYYY-MM-DDTHH:MM")
+    else:
+        errors.append("La fecha y hora es requerida")
+    
+    img_url_value = None
+    if img_url and img_url.strip():
+        img_url_value = img_url.strip()
+        if len(img_url_value) > 500:
+            errors.append("La URL de imagen no puede tener más de 500 caracteres")
+    
+    artist_id_value = None
+    if artist_id and artist_id.strip():
+        try:
+            artist_id_value = int(artist_id.strip())
+            if artist_id_value < 1:
+                errors.append("El id del artista tiene que ser un número positivo")
+            artist = db.execute(select(Artist).where(Artist.id == artist_id_value)).scalar_one_or_none()
+            if not artist:
+                errors.append("El artista seleccionado no existe")
+        except ValueError:
+            errors.append("El id del artista tiene que ser un número válido")
+    else:
+        errors.append("El id del artista es requerido")
+    
+    if not name or not name.strip():
+        errors.append("El nombre es requerido")
+    elif len(name.strip()) > 200:
+        errors.append("El nombre no puede exceder los 200 caracteres")
 
 @router.get("/{concert_id}", response_class=HTMLResponse)
 def concert_detail(request: Request, concert_id: int, db: Session = Depends(get_db)):
