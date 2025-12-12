@@ -20,6 +20,14 @@
 - Agradecimientos: agradecer a Fundación Adecco, a profesores, a mentores, a las empresas que vienen...
 - Dudas, ruegos y sugerencias
 
+### Directrices
+- 15-20 minutos para la presentación de cada grupo
+- Repartirse la presentación para que todos los integrantes hablen un tiempo similar
+- Reunirse para practicar
+- Saberse bien la parte que te toca
+- Saber toda la presentación para poder exponerla en caso de que algún integrante del grupo falte
+- Simulacro: Lunes 15 de 12:40 a 14:00
+
 ### Ejemplo de presentación
 
 https://docs.google.com/presentation/d/1i2S12ai5SibwkRucicDkVHNuOF7PwK9RnOMIgpf1R5A/edit?usp=sharing
