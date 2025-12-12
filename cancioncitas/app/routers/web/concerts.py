@@ -28,7 +28,7 @@ def show_create_form(request: Request, db: Session = Depends(get_db)):
     
     return templates.TemplateResponse(
         "concerts/form.html",
-        {"request": request, "artists": artists, "statuses": ConcertStatus}
+        {"request": request, "concert": None, "artists": artists, "statuses": ConcertStatus}
     )
 
 @router.get("/{concert_id}", response_class=HTMLResponse)
@@ -45,4 +45,22 @@ def concert_detail(request: Request, concert_id: int, db: Session = Depends(get_
     return templates.TemplateResponse(
         "concerts/detail.html",
         {"request": request, "concert": concert}
+    )
+
+@router.get("/{concert_id}/edit", response_class=HTMLResponse)
+def show_edit_form(request: Request, concert_id: int, db: Session = Depends(get_db)):
+    concert = db.execute(
+        select(Concert)
+        .where(Concert.id == concert_id)
+        .options(joinedload(Concert.artist))
+    ).scalar_one_or_none()
+    
+    if concert is None:
+        raise HTTPException(status_code=404, detail="Concierto no encontrado")
+    
+    artists = db.execute(select(Artist)).scalars().all()
+    
+    return templates.TemplateResponse(
+        "concerts/form.html",
+        {"request": request, "concert": concert, "artists": artists, "statuses": ConcertStatus}
     )
