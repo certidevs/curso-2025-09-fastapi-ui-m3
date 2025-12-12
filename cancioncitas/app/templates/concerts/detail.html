@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🐦‍⬛🎶 Detalle de concierto</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css" integrity="sha512-2SwdPD6INVrV/lHTZbO2nodKhrnDdJK9/kg2XD1r9uGqPo1cUbujc+IYdlYdEErWNu69gVcYgdxlmVmzTWnetw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+</head>
+<body>
+    <div class="container my-5 pb-5">
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <div class="card shadow" style="width: 32rem;">
+                    <div class="card-header bg-primary text-white">
+                        <h2 class="card-title mb-0">
+                            <i class="fa-solid fa-calendar"></i> Detalle de concierto
+                        </h2>
+                    </div>
+                    
+                    <div class="card-body">
+                        <div class="mb-3">
+                            <h5 class="text-body-secondary">ID</h5>
+                            <p class="fs-5">{{ concert.id }}</p>
+                        </div>
+                        <hr>
+                        <div class="mb-3">
+                            <h5 class="text-body-secondary">Nombre</h5>
+                            <p class="fs-4 fw-bold">{{ concert.name }}</p>
+                        </div>
+                        <hr>
+                        <div class="mb-3">
+                            <h5 class="text-body-secondary">Artista</h5>
+                            <p class="fs-5">
+                                {% if concert.artist %}
+                                    <a href="/artists/{{ concert.artist.id }}" class="text-decoration-none">
+                                        {{ concert.artist.name }}
+                                    </a>
+                                {% else %}
+                                    <span class="text-body-secondary">No especificado</span>
+                                {% endif %}
+                            </p>
+                        </div>
+                        <hr>
+                        <div class="mb-3">
+                            <h5 class="text-body-secondary">Precio</h5>
+                            <p class="fs-5">
+                                {{ "%.2f"|format(concert.price) }} €
+                            </p>
+                        </div>
+                        <hr>
+                        <div class="mb-3">
+                            <h5 class="text-body-secondary">Capacidad</h5>
+                            <p class="fs-5">
+                                {% if concert.capacity is not none %}
+                                    {{ concert.capacity }} personas
+                                {% else %}
+                                    <span class="text-body-secondary">No especificada</span>
+                                {% endif %}
+                            </p>
+                        </div>
+                        <hr>
+                        <div class="mb-3">
+                            <h5 class="text-body-secondary">Estado</h5>
+                            <p class="fs-5">
+                                {% if concert.status.value == 'scheduled' %}
+                                    <span class="badge bg-primary">
+                                        Programado
+                                    </span>
+                                {% elif concert.status.value == 'cancelled' %}
+                                    <span class="badge bg-danger">
+                                        Cancelado
+                                    </span>
+                                {% elif concert.status.value == 'completed' %}
+                                    <span class="badge bg-success">
+                                        Completado
+                                    </span>
+                                {% else %}
+                                    <span class="text-body-secondary">-</span>
+                                {% endif %}
+                            </p>
+                        </div>
+                        <hr>
+                        <div class="mb-3">
+                            <h5 class="text-body-secondary">Agotado</h5>
+                            <p class="fs-5">
+                                {% if concert.is_sold_out is none %}
+                                    <span class="text-body-secondary">-</span>
+                                {% elif concert.is_sold_out %}
+                                    <span class="badge bg-warning text-dark">
+                                        Sí
+                                    </span>
+                                {% else %}
+                                    <span class="badge bg-secondary">
+                                        No
+                                    </span>
+                                {% endif %}
+                            </p>
+                        </div>
+                        <hr>
+                        <div class="mb-3">
+                            <h5 class="text-body-secondary">Fecha y hora</h5>
+                            <p class="fs-5">
+                                {% if concert.date_time %}
+                                    {{ concert.date_time.strftime('%d/%m/%Y %H:%M') }}
+                                {% else %}
+                                {% endif %}
+                            </p>
+                        </div>
+                        {% if concert.img_url %}
+                        <hr>
+                        <div class="mb-3">
+                            <h5 class="text-body-secondary">URL de la imagen</h5>
+                            <div class="mb-2">
+                                <img src="{{ concert.img_url }}" alt="{{ concert.name }}" class="img-fluid rounded" style="max-height: 200px;">
+                            </div>
+                            <p class="fs-5">
+                                <a href="{{ concert.img_url }}" target="_blank" class="text-decoration-none">
+                                    {{ concert.img_url}}
+                                </a>
+                            </p>
+                        </div>
+                        {% endif %}
+                    </div>
+
+                    <div class="card-footer">
+                        <a href="/concerts" class="btn btn-secondary me-2"><i class="fa-solid fa-arrow-left"></i> Volver a la lista</a>
+                        <a href="/concerts/{{ concert.id }}/edit" class="btn btn-warning me-2">
+                            <i class="fa-solid fa-pen-to-square"></i> Editar
+                        </a>
+                        <form method="post" action="/concerts/{{ concert.id }}/delete" style="display: inline" onsubmit="return confirm('¿Estás seguro de que quieres eliminar este concierto?');">
+                            <button type="submit" class="btn btn-danger">
+                                <i class="fa-solid fa-trash-can"></i> Eliminar
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
