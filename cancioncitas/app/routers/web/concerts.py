@@ -5,7 +5,7 @@ from sqlalchemy.orm import Session, joinedload
 from sqlalchemy import select
 
 from app.database import get_db
-from app.models import Concert
+from app.models import Concert, Artist, ConcertStatus
 
 templates = Jinja2Templates(directory="app/templates")
 
@@ -20,6 +20,15 @@ def list_concerts(request: Request, db: Session = Depends(get_db)):
     return templates.TemplateResponse(
         "concerts/list.html",
         {"request": request, "concerts": concerts}
+    )
+
+@router.get("/new", response_class=HTMLResponse)
+def show_create_form(request: Request, db: Session = Depends(get_db)):
+    artists = db.execute(select(Artist)).scalars().all()
+    
+    return templates.TemplateResponse(
+        "concerts/form.html",
+        {"request": request, "artists": artists, "statuses": ConcertStatus}
     )
 
 @router.get("/{concert_id}", response_class=HTMLResponse)
