@@ -21,3 +21,19 @@ def list_concerts(request: Request, db: Session = Depends(get_db)):
         "concerts/list.html",
         {"request": request, "concerts": concerts}
     )
+
+@router.get("/{concert_id}", response_class=HTMLResponse)
+def concert_detail(request: Request, concert_id: int, db: Session = Depends(get_db)):
+    concert = db.execute(
+        select(Concert)
+        .where(Concert.id == concert_id)
+        .options(joinedload(Concert.artist))
+    ).scalar_one_or_none()
+    
+    if concert is None:
+        raise HTTPException(status_code=404, detail="Concierto no encontrado")
+    
+    return templates.TemplateResponse(
+        "concerts/detail.html",
+        {"request": request, "concert": concert}
+    )
