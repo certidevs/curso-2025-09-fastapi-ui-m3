@@ -122,6 +122,38 @@ def create_concert(
         errors.append("El nombre es requerido")
     elif len(name.strip()) > 200:
         errors.append("El nombre no puede exceder los 200 caracteres")
+    
+    if errors:
+        return templates.TemplateResponse(
+            "concerts/form.html",
+            {"request": request, "concert": None, "artists": artists, "statuses": ConcertStatus, "errors": errors, "form_data": form_data}
+        )
+    
+    try:
+        concert = Concert(
+            name=name.strip(),
+            price=price_value,
+            capacity=capacity_value,
+            status=status_value,
+            is_sold_out=is_sold_out_value,
+            data_time=datetime_value,
+            img_url=img_url_value,
+            artist_id=artist_id_value
+        )
+        
+        db.add(concert)
+        db.commit()
+        db.refresh(concert)
+        
+        return RedirectResponse(url=f"/concerts/{concert.id}", status_code=303)
+    
+    except Exception as e:
+        db.rollback()
+        errors.append(f"Error al crear el concierto: {str(e)}")
+        return templates.TemplateResponse(
+            "concerts/form.html",
+            {"request": request, "concert": None, "artists": artists, "statuses": ConcertStatus, "errors": errors, "form_data": form_data}
+        )
 
 @router.get("/{concert_id}", response_class=HTMLResponse)
 def concert_detail(request: Request, concert_id: int, db: Session = Depends(get_db)):
