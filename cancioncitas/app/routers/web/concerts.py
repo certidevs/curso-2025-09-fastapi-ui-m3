@@ -1,8 +1,8 @@
 from fastapi.templating import Jinja2Templates
-from fastapi import APIRouter, Form, HTTPException, Request, Depends
+from fastapi import APIRouter, Form, HTTPException, Query, Request, Depends
 from fastapi.responses import HTMLResponse, RedirectResponse
 from sqlalchemy.orm import Session, joinedload
-from sqlalchemy import select
+from sqlalchemy import and_, select
 from datetime import datetime
 
 from app.database import get_db
@@ -13,14 +13,51 @@ templates = Jinja2Templates(directory="app/templates")
 router = APIRouter(prefix="/concerts", tags=["web"])
 
 @router.get("", response_class=HTMLResponse)
-def list_concerts(request: Request, db: Session = Depends(get_db)):
-    concerts = db.execute(
-        select(Concert).options(joinedload(Concert.artist))
-    ).scalars().unique().all()
+def list_concerts(
+    request: Request, 
+    db: Session = Depends(get_db),
+    name: str | None = Query(None, description="Filtro por nombre del concierto"),
+    artist_id: str | None = Query(None, description="Filtro por ID del artista"),
+    future_only: str | None = Query(None, description="Mostrar solo conciertos futuros")
+):
+    query = select(Concert).options(joinedload(Concert.artist))
+    
+    conditions = []
+    
+    if name and name.strip():
+        conditions.append(Concert.name.ilike(f"%{name.strip()}%"))
+    
+    artist_id_value = None
+    if artist_id and artist_id.strip():
+        try:
+            artist_id_value = int(artist_id.strip())
+            conditions.append(Concert.artist_id == artist_id_value)
+        except ValueError:
+            pass
+    
+    future_only_value = False
+    if future_only and future_only.strip().lower() in ("true", "1", "on", "yes"):
+        future_only_value = True
+        now = datetime.now()
+        conditions.append(Concert.date_time >= now)
+    
+    if conditions:
+        query = query.where(and_(*conditions))
+    
+    concerts = db.execute(query).scalars().unique().all()
+    
+    artists = db.execute(select(Artist).order_by(Artist.name)).scalars().all()
     
     return templates.TemplateResponse(
         "concerts/list.html",
-        {"request": request, "concerts": concerts}
+        {
+            "request": request, 
+            "concerts": concerts,
+            "artists": artists,
+            "filter_name": name or "",
+            "filter_artist_id": artist_id_value,
+            "filter_future_only": future_only_value
+        }
     )
 
 @router.get("/new", response_class=HTMLResponse)

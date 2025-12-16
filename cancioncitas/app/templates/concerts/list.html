@@ -16,6 +16,67 @@
             </a>
         </div>
 
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5 class="mb-0">
+                    <i class="fa-solid fa-filter"></i> Filtros de búsqueda
+                </h5>
+            </div>
+            <div class="card-body">
+                <form method="get" action="/concerts" class="row g-3">
+                    <div class="col-md-4">
+                        <label for="name" class="form-label">Nombre del concierto</label>
+                        <input 
+                            type="text" 
+                            class="form-control" 
+                            id="name" 
+                            name="name" 
+                            placeholder="Buscar por nombre..."
+                            value="{{ filter_name }}"
+                        >
+                    </div>
+                    
+                    <div class="col-md-4">
+                        <label for="artist_id" class="form-label">Artista</label>
+                        <select class="form-select" id="artist_id" name="artist_id">
+                            <option value="">Todos los artistas</option>
+                            {% for artist in artists %}
+                            <option value="{{ artist.id }}" {% if filter_artist_id == artist.id %}selected{% endif %}>
+                                {{ artist.name }}
+                            </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    
+                    <div class="col-md-4">
+                        <label class="form-label d-block">&nbsp;</label>
+                        <div class="form-check form-switch mt-2">
+                            <input 
+                                class="form-check-input" 
+                                type="checkbox" 
+                                id="future_only" 
+                                name="future_only" 
+                                value="true"
+                                {% if filter_future_only %}checked{% endif %}
+                            >
+                            <label class="form-check-label" for="future_only">
+                                <i class="fa-solid fa-calendar-day"></i> Solo conciertos futuros
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <div class="col-12">
+                        <button type="submit" class="btn btn-primary me-2">
+                            <i class="fa-solid fa-magnifying-glass"></i> Buscar
+                        </button>
+                        <a href="/concerts" class="btn btn-secondary">
+                            <i class="fa-solid fa-xmark"></i> Limpiar filtros
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+
         <table class="table table-striped">
             <thead>
                 <tr>
